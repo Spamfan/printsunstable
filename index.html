@@ -533,11 +533,19 @@
         .intake-line { border-bottom: 1px solid black; width: 100%; height: 1px; display: block; margin-top: 14px; }
 
         @media print {
-            html, body {
+            html:not(.multi-page), body:not(.multi-page) {
                 height: 100%;
+                overflow: hidden !important; 
+            }
+            
+            html.multi-page, body.multi-page {
+                height: auto !important;
+                overflow: visible !important;
+            }
+
+            html, body {
                 margin: 0 !important;
                 padding: 0 !important;
-                overflow: hidden !important; 
             }
             
             #login-view, #app-view, #version-text, #warning-modal, #tutorial-modal, #hub-link-stack { display: none !important; }
@@ -765,7 +773,7 @@
                 <p><strong>Click on each carrier to see an example filled out.</strong></p>
                 <br>
                 <div class="tut-img-container">
-                    <img id="tut-example-img" src="https://via.placeholder.com/800x500?text=ATT+Example" alt="Example Sheet">
+                    <img id="tut-example-img" src="https://i.imgur.com/BnLTk4j.png" alt="Example Sheet">
                 </div>
                 <div class="tut-text">
                     <p style="margin-top: 10px;"><strong>Give this to postpaid customers before they leave. On each sheet:</strong></p>
@@ -794,7 +802,7 @@
 
     <script>
         // --- VERSIONING ---
-        const APP_VERSION = "Beta 27";
+        const APP_VERSION = "Beta 28";
         document.getElementById('version-text').textContent = APP_VERSION;
 
         // --- GATEKEEPER LOGIC ---
@@ -990,9 +998,17 @@
         function printDoc(type) {
             // 1. Forcefully clear ANY existing print classes to prevent bleed-over
             document.body.className = document.body.className.replace(/\bprinting-\S+/g, '');
+            document.body.classList.remove('multi-page');
+            document.documentElement.classList.remove('multi-page');
             
             // 2. Add the requested print class
             document.body.classList.add('printing-' + type);
+
+            // Multi-page override
+            if (type === 'attpromos') {
+                document.body.classList.add('multi-page');
+                document.documentElement.classList.add('multi-page');
+            }
             
             // 3. Tiny timeout to ensure DOM updates before calling print dialog
             setTimeout(() => {
@@ -1003,6 +1019,8 @@
         // Native cleanup listener: instantly removes classes when dialog closes
         window.addEventListener('afterprint', () => {
             document.body.className = document.body.className.replace(/\bprinting-\S+/g, '');
+            document.body.classList.remove('multi-page');
+            document.documentElement.classList.remove('multi-page');
         });
 
         // --- TUTORIAL MODAL LOGIC ---
