@@ -261,6 +261,16 @@
 
         .secondary-card .preview-stage { transform: scale(0.18); }
 
+        .preview-stage-landscape {
+            width: 11in;
+            height: 8.5in;
+            transform: scale(0.17); /* Fit to card width */
+            transform-origin: top left;
+            pointer-events: none;
+            background: white;
+            position: relative;
+        }
+
         /* --- AT&T LOCK STYLES --- */
         .locked-card .preview-stage {
             filter: grayscale(100%) opacity(30%);
@@ -512,6 +522,16 @@
             z-index: 5;
         }
 
+        .page-landscape {
+            width: 11in;
+            height: 8.5in;
+            background-color: white;
+            overflow: hidden; 
+            position: relative;
+            page-break-after: always;
+            break-after: always;
+        }
+
         /* Core Typography for legacy templates */
         .half-sheet, .quadrant { color: #000 !important; font-size: 10pt !important; font-family: Arial, Helvetica, sans-serif; line-height: 1.4; }
         .row { margin-bottom: 6px; width: 100%; white-space: nowrap; }
@@ -550,15 +570,12 @@
             
             #login-view, #app-view, #version-text, #warning-modal, #tutorial-modal, #hub-link-stack { display: none !important; }
 
-            body.printing-takehome #doc-takehome { display: block !important; }
             body.printing-intake #doc-intake { display: block !important; }
-            body.printing-combined #doc-combined { display: block !important; }
             body.printing-vzwtrade #doc-vzwtrade { display: block !important; }
             body.printing-iphonetransfer #doc-iphonetransfer { display: block !important; }
             body.printing-warpcalls #doc-warpcalls { display: block !important; }
-            body.printing-atttradein #doc-atttradein { display: block !important; }
-            body.printing-attpromos #doc-attpromos { display: block !important; }
             body.printing-takehomev2 #doc-takehomev2 { display: block !important; }
+            body.printing-vzwflyertest #doc-vzwflyertest { display: block !important; }
 
             @page {
                 size: 8.5in 11in;
@@ -597,7 +614,7 @@
             <strong style="font-size: 1.2em;">PROPRIETARY CONTENT</strong><br><br>
             Unauthorized access and/or sharing is forbidden. To gain access, agree to these terms by inputting the passcode or pin given to you by the device administrator.
         </p>
-        <input type="tel" id="pin-input" placeholder="Enter PIN">
+        <input type="tel" id="pin-input" placeholder="Enter PIN" style="-webkit-text-security: disc;" autofocus>
         <button id="btn-enter">Enter</button>
         <p id="pin-error">Incorrect PIN</p>
     </div>
@@ -613,17 +630,20 @@
                     <div class="category-title">Common printouts</div>
                     <div class="category-box box-blue">
                         <div class="cards-container">
-                            <div class="action-card" onclick="printDoc('combined')">
-                                <div class="preview-stage" id="preview-combined"></div>
-                                <div class="card-overlay">
-                                    <div class="card-title">Take Home Sheet</div>
-                                    <div class="card-desc">Right Click / Tap to Print</div>
+                            <div class="card-wrapper">
+                                <div class="action-card" onclick="printDoc('takehomev2')">
+                                    <div class="preview-stage" id="preview-takehomev2"></div>
+                                    <div class="card-overlay">
+                                        <div class="card-title">Take Home Sheet</div>
+                                        <div class="card-desc">Right Click / Tap to Print</div>
+                                    </div>
                                 </div>
+                                <button class="tutorial-btn" id="btn-tut-ths2">how to use this sheet</button>
                             </div>
                             <div class="action-card" onclick="printDoc('intake')">
                                 <div class="preview-stage" id="preview-intake"></div>
                                 <div class="card-overlay">
-                                    <div class="card-title">Fill Out Sheet</div>
+                                    <div class="card-title">Intake Sheet</div>
                                     <div class="card-desc">Right Click / Tap to Print</div>
                                 </div>
                             </div>
@@ -635,105 +655,79 @@
                                     <div class="card-desc">Right Click / Tap to Print</div>
                                 </div>
                             </div>
-                            <div class="action-card locked-card" id="card-atttradein" onclick="handleAttClick()">
-                                <div class="preview-stage" id="preview-atttradein"></div>
-                                <div class="lock-overlay" id="lock-att">
-                                    <span>show doc</span>
-                                </div>
-                                <div class="card-overlay">
-                                    <div class="card-title">ATT Trade-In Flyer 05-15 (unchanged since 04-24)</div>
-                                    <div class="card-desc">Right Click / Tap to Print</div>
-                                </div>
-                            </div>
                             <div class="action-card locked-card" id="card-attpromos" onclick="handleAttPromosClick()">
                                 <div class="preview-stage" id="preview-attpromos"></div>
                                 <div class="lock-overlay" id="lock-attpromos">
                                     <span>show doc</span>
                                 </div>
                                 <div class="card-overlay">
-                                    <div class="card-title">AT&T Promos 06-01-2026</div>
+                                    <div class="card-title">AT&T Promos 06-16-26</div>
                                     <div class="card-desc">Right Click / Tap to Print</div>
                                 </div>
                             </div>
-                            <div class="card-wrapper">
-                                <div class="action-card" onclick="printDoc('takehomev2')">
-                                    <div class="preview-stage" id="preview-takehomev2"></div>
-                                    <div class="card-overlay">
-                                        <div class="card-title">Take Home Sheet V2</div>
-                                        <div class="card-desc">Right Click / Tap to Print</div>
-                                    </div>
+                            <div class="action-card locked-card" id="card-vzwpromos" onclick="handleVzwPromosClick()">
+                                <div class="preview-stage" id="preview-vzwpromos"></div>
+                                <div class="lock-overlay" id="lock-vzwpromos">
+                                    <span>show doc</span>
                                 </div>
-                                <button class="tutorial-btn" id="btn-tut-ths2">how to use this sheet</button>
+                                <div class="card-overlay">
+                                    <div class="card-title">VZW Promos 6-16-26</div>
+                                    <div class="card-desc">Right Click / Tap to Print</div>
+                                </div>
                             </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- ROW 2: SECONDARY DOCUMENTS (SOFT LOCK) -->
-            <div class="dashboard-row">
-                
-                <div class="category-container secondary-category">
-                    <div class="category-title">Other</div>
-                    <div class="category-box box-gray">
-                        
-                        <!-- Soft Lock Button -->
-                        <div id="unlock-container">
-                            <button id="btn-unlock-guides">show other documents</button>
-                        </div>
-
-                        <!-- Hidden Cards -->
-                        <div id="hidden-guides-container" class="cards-container">
-                            <div class="action-card secondary-card" onclick="printDoc('vzwtrade')">
+                            <div class="action-card" onclick="printDoc('vzwflyertest')">
+                                <div class="preview-stage-landscape" id="preview-vzwflyertest"></div>
+                                <div class="card-overlay">
+                                    <div class="card-title">[testing only] VZW flyer</div>
+                                    <div class="card-desc">Right Click / Tap to Print</div>
+                                </div>
+                            </div>
+                            <div class="action-card locked-card" id="card-vzwtrade" onclick="handleVzwTradeClick()">
                                 <div class="preview-stage" id="preview-vzwtrade"></div>
+                                <div class="lock-overlay" id="lock-vzwtrade">
+                                    <span>show doc</span>
+                                </div>
                                 <div class="card-overlay">
                                     <div class="card-title">Verizon Trade in Guide</div>
                                     <div class="card-desc">Right Click / Tap to Print</div>
                                 </div>
                             </div>
-                            <div class="action-card secondary-card" onclick="printDoc('iphonetransfer')">
+                            <div class="action-card locked-card" id="card-iphonetransfer" onclick="handleIphoneTransferClick()">
                                 <div class="preview-stage" id="preview-iphonetransfer"></div>
+                                <div class="lock-overlay" id="lock-iphonetransfer">
+                                    <span>show doc</span>
+                                </div>
                                 <div class="card-overlay">
                                     <div class="card-title">iPhone transfer guide</div>
                                     <div class="card-desc">Right Click / Tap to Print</div>
                                 </div>
                             </div>
-                            <!-- Legacy Line moved to Other -->
-                            <div class="action-card secondary-card" onclick="printDoc('takehome')">
-                                <div class="preview-stage" id="preview-takehome"></div>
-                                <div class="card-overlay">
-                                    <div class="card-title">half page cutting line</div>
-                                    <div class="card-desc">Right Click / Tap to Print</div>
-                                </div>
-                            </div>
                         </div>
+
                     </div>
                 </div>
-
-            </div> <!-- End Row 2 -->
+            </div>
 
         </div>
     </div> <!-- End App View -->
 
-    <!-- WARNING MODAL -->
-    <div id="warning-modal">
+    <!-- HIDDEN PRINT CONTAINERS & MODALS -->
+    <div id="vzw-trade-warning-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center;">
         <div class="modal-content">
-            <p><strong>The Verizon trade in and iPhone transfer guides are unfinished documents and could provide inaccurate/damaging steps or information.</strong> Using these guides isn't advised until the documents have been properly rewritten with accurate information.</p>
+            <p><strong>The Verizon trade-in guide is an unfinished document and could provide inaccurate and damaging steps or information.</strong> Using this guide isn't advised until it's been rewritten with accurate information.</p>
             <div class="modal-buttons">
-                <button class="btn-modal" id="btn-modal-okay">okay</button>
-                <button class="btn-modal" id="btn-modal-show">show unfinished documents anyway</button>
+                <button class="btn-modal" id="btn-vzwtrade-cancel" style="background-color: #e4e6eb; color: #1c1e21;">okay</button>
+                <button class="btn-modal" id="btn-vzwtrade-show" style="background-color: #1877f2; color: white;">I understand the risk and want to print it anyway.</button>
             </div>
         </div>
     </div>
 
-    <!-- HIDDEN PRINT CONTAINERS & MODALS -->
-    <div id="att-warning-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center;">
+    <div id="iphone-transfer-warning-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center;">
         <div class="modal-content">
-            <p><strong>Heads up:</strong> the ATT trade in has its upload date posted to its title and could be out of date. Please only continue if it's the most up to date trade in guide.</p>
+            <p><strong>The iPhone transfer guide is an unfinished document and could provide inaccurate and damaging steps or information.</strong> Using this guide isn't advised until it's been rewritten with accurate information.</p>
             <div class="modal-buttons">
-                <button class="btn-modal" id="btn-att-cancel" style="background-color: #e4e6eb; color: #1c1e21;">cancel</button>
-                <button class="btn-modal" id="btn-att-show" style="background-color: #1877f2; color: white;">I checked the date, show me the document</button>
+                <button class="btn-modal" id="btn-iphonetransfer-cancel" style="background-color: #e4e6eb; color: #1c1e21;">okay</button>
+                <button class="btn-modal" id="btn-iphonetransfer-show" style="background-color: #1877f2; color: white;">I understand the risk and want to print it anyway.</button>
             </div>
         </div>
     </div>
@@ -748,21 +742,28 @@
         </div>
     </div>
 
-    <div id="doc-takehome" class="doc-container"></div>
+    <div id="vzw-promos-warning-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center;">
+        <div class="modal-content">
+            <p><strong>Heads up:</strong> the Verizon flyer has its upload date posted to its title and could be out of date. Please only continue if it's the most up to date promo flyer.</p>
+            <div class="modal-buttons">
+                <button class="btn-modal" id="btn-vzwpromos-cancel" style="background-color: #e4e6eb; color: #1c1e21;">cancel</button>
+                <button class="btn-modal" id="btn-vzwpromos-show" style="background-color: #1877f2; color: white;">I checked the date, show me the document</button>
+            </div>
+        </div>
+    </div>
+
     <div id="doc-intake" class="doc-container"></div>
-    <div id="doc-combined" class="doc-container"></div>
     <div id="doc-vzwtrade" class="doc-container"></div>
     <div id="doc-iphonetransfer" class="doc-container"></div>
     <div id="doc-warpcalls" class="doc-container"></div>
-    <div id="doc-atttradein" class="doc-container"></div>
-    <div id="doc-attpromos" class="doc-container"></div>
     <div id="doc-takehomev2" class="doc-container"></div>
+    <div id="doc-vzwflyertest" class="doc-container"></div>
 
     <!-- TUTORIAL MODAL -->
     <div id="tutorial-modal">
         <div class="modal-content">
             <div class="tut-header">
-                <h2>Take Home Sheet V2 Guide</h2>
+                <h2>Take Home Sheet Guide</h2>
             </div>
             <div class="tut-body">
                 <div class="tutorial-tabs">
@@ -795,26 +796,33 @@
             </div>
             <div class="tut-footer">
                 <button class="btn-modal" id="tut-btn-close" style="background-color: #e4e6eb; color: #1c1e21;">close tutorial</button>
-                <button class="btn-modal btn-tut-print" id="tut-btn-print">Print THS v2</button>
+                <button class="btn-modal btn-tut-print" id="tut-btn-print">Print THS</button>
             </div>
         </div>
     </div>
 
     <script>
         // --- VERSIONING ---
-        const APP_VERSION = "Beta 28";
+        const APP_VERSION = "v0.36";
         document.getElementById('version-text').textContent = APP_VERSION;
 
         // --- GATEKEEPER LOGIC ---
-        const PIN_CODE = "102030";
+        const LEGACY_PIN = atob('MTAyMDMw'); // "102030"
+        const DYNAMIC_SUFFIX = atob('MTAyMA=='); // "1020"
         const pinInput = document.getElementById('pin-input');
         const btnEnter = document.getElementById('btn-enter');
         const pinError = document.getElementById('pin-error');
         const loginView = document.getElementById('login-view');
         const appView = document.getElementById('app-view');
 
+        pinInput.focus(); // Fallback for browsers that ignore HTML autofocus
+
+        const isValidPin = (val) => {
+            return val === LEGACY_PIN || (val.length === 8 && val.endsWith(DYNAMIC_SUFFIX));
+        };
+
         const checkPin = () => {
-            if (pinInput.value === PIN_CODE) {
+            if (isValidPin(pinInput.value)) {
                 loginView.style.display = 'none';
                 appView.style.display = 'flex';
                 // Trigger a small resize event to ensure layout calculates correctly if needed
@@ -830,62 +838,62 @@
         pinInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') checkPin();
         });
-
-        // --- MODAL LOGIC ---
-        const btnUnlock = document.getElementById('btn-unlock-guides');
-        const modal = document.getElementById('warning-modal');
-        const btnOkay = document.getElementById('btn-modal-okay');
-        const btnShow = document.getElementById('btn-modal-show');
-        const unlockContainer = document.getElementById('unlock-container');
-        const hiddenGuides = document.getElementById('hidden-guides-container');
-
-        btnUnlock.addEventListener('click', () => {
-            modal.style.display = 'flex';
+        pinInput.addEventListener('input', (e) => {
+            if (isValidPin(e.target.value)) {
+                e.target.blur(); // Hide mobile keyboard
+                checkPin();
+            }
         });
 
-        btnOkay.addEventListener('click', () => {
-            modal.style.display = 'none';
+        // --- MODAL LOGIC (VZW Trade & iPhone Transfer) ---
+        const vzwTradeCard = document.getElementById('card-vzwtrade');
+        const vzwTradeModal = document.getElementById('vzw-trade-warning-modal');
+        const btnVzwTradeCancel = document.getElementById('btn-vzwtrade-cancel');
+        const btnVzwTradeShow = document.getElementById('btn-vzwtrade-show');
+
+        function handleVzwTradeClick() {
+            if (vzwTradeCard.classList.contains('locked-card')) {
+                vzwTradeModal.style.display = 'flex';
+            } else {
+                printDoc('vzwtrade');
+            }
+        }
+
+        btnVzwTradeCancel.addEventListener('click', () => {
+            vzwTradeModal.style.display = 'none';
         });
 
-        btnShow.addEventListener('click', () => {
-            modal.style.display = 'none';
-            unlockContainer.style.display = 'none';
-            hiddenGuides.style.display = 'flex';
+        btnVzwTradeShow.addEventListener('click', () => {
+            vzwTradeModal.style.display = 'none';
+            vzwTradeCard.classList.remove('locked-card');
+            printDoc('vzwtrade');
+        });
+
+        const iphoneTransferCard = document.getElementById('card-iphonetransfer');
+        const iphoneTransferModal = document.getElementById('iphone-transfer-warning-modal');
+        const btnIphoneTransferCancel = document.getElementById('btn-iphonetransfer-cancel');
+        const btnIphoneTransferShow = document.getElementById('btn-iphonetransfer-show');
+
+        function handleIphoneTransferClick() {
+            if (iphoneTransferCard.classList.contains('locked-card')) {
+                iphoneTransferModal.style.display = 'flex';
+            } else {
+                printDoc('iphonetransfer');
+            }
+        }
+
+        btnIphoneTransferCancel.addEventListener('click', () => {
+            iphoneTransferModal.style.display = 'none';
+        });
+
+        btnIphoneTransferShow.addEventListener('click', () => {
+            iphoneTransferModal.style.display = 'none';
+            iphoneTransferCard.classList.remove('locked-card');
+            printDoc('iphonetransfer');
         });
 
         // --- TEMPLATES ---
         
-        // 1. Line Only Legacy
-        const contentTakeHomeHalf = `
-            <div class="half-sheet">
-                <div class="row">
-                    <div class="line w-lg"></div><span class="label">for</span><span class="label" style="margin-left: 20px;">Your Number:</span>
-                    <div class="line w-sm"></div><span class="symbol">-</span><div class="line w-sm"></div><span class="symbol">-</span><div class="line w-sm"></div>
-                    <span class="label" style="margin-left: 20px;">Your</span><div class="line w-sm"></div><span class="label">PIN:</span><div class="line w-md"></div>
-                </div>
-                <div class="row">
-                    <span class="label">Monthly bill: $</span><div class="line w-sm"></div><span class="symbol">+</span><div class="line w-sm"></div>
-                    <span class="symbol">+</span><div class="line w-sm"></div><span class="symbol">= ~$</span><div class="line w-sm"></div><span class="label">/mo (___yr)</span>
-                </div>
-                <div class="th-alert">⚠ IMPORTANT: BY END OF TOMORROW, Set up auto pay to discount-eligible <div class="line w-lg"></div> and paperless billing to email to keep your bill as low as possible. Do this in the <div class="line w-lg"></div> app or site, or call 611. Note that your app/site password is not the same as your account passcode/pin.</div>
-                <div class="th-carrier"><span class="th-bold">Verizon users:</span> use verizon.com/signin or My Verizon app > Create new account > Mobile (NOT prepaid) > make your user ID identical to the email given at Walmart (ie FakeEmail97@gmail.com) if possible.</div>
-                <div class="th-carrier"><span class="th-bold">AT&T Users:</span> use att.com/my or My AT&T app > "Forgot password" > your user id is usually identical to the email you gave at Walmart (ie FakeEmail97@gmail.com).</div>
-                <div class="th-carrier"><span class="th-bold">T-Mobile Users:</span> use t-mobile.com/signin or T-Life app > Sign up.</div>
-                <div class="gap-md"></div>
-                <div class="th-text-block">ℹ <b>Your first bill is due in ___ days or the date selected for auto pay.</b></div>
-                <div class="th-text-block">ℹ <b>Heads up!</b> Your first bill will be higher than normal, then reimbursed to compensate. You can request to accelerate your discount credits by contacting your carrier directly.</div>
-                <div class="gap-sm"></div>
-                <div class="row" style="display:flex; justify-content: space-between;">
-                    <div>Est. 1st bill = ~$<div class="line w-md"></div></div>
-                    <div>Est. 2nd bill = ~$<div class="line w-md"></div></div>
-                    <div>Est. 3rd bill = ~$<div class="line w-md"></div></div>
-                </div>
-                <div class="gap-lg"></div>
-                <div class="row">Overcharge of ~$<div class="line w-sm"></div> is reimbursed, usually by the end of bill #2 or #3.</div>
-                <div class="row th-carrier">NOTE: The activation fee(s) of $<div class="line w-sm"></div> is <i>not</i> automatically reimbursed.</div>
-            </div>`;
-        const templateTakeHome = `<div class="page"><div class="takehome-grid">${contentTakeHomeHalf}${contentTakeHomeHalf}</div><div class="cut-line-horiz"></div></div>`;
-
         // 2. Intake Sheet
         const contentIntakeQuad = `
             <div class="quadrant">
@@ -896,9 +904,6 @@
             </div>`;
         const templateIntake = `<div class="page"><div class="intake-grid">${contentIntakeQuad}${contentIntakeQuad}${contentIntakeQuad}${contentIntakeQuad}</div><div class="cut-line-vert"></div><div class="cut-line-horiz" style="top: 5.45in;"></div></div>`;
 
-        // 3. Combined THS
-        const templateCombined = `<div class="page"><img src="https://i.imgur.com/qpnpyBd.png" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;"><div class="cut-line-horiz" style="z-index: 5;"></div></div>`;
-
         // 4. VZW Trade In
         const templateVzwTrade = `<div class="page"><img src="https://i.imgur.com/1vBTDLU.png" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;"></div>`;
 
@@ -908,40 +913,11 @@
         // 6. WARP Calls Guide
         const templateWarpCalls = `<div class="page"><img src="https://i.imgur.com/0YAC03J.png" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;"></div>`;
 
-        // 7. ATT Trade-In Flyer
-        const templateAttTradeIn = `<div class="page"><img src="https://i.imgur.com/zqmfeFd.jpeg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;"></div>`;
-
-        // 8. AT&T Promos (2 Pages overriding absolute positioning lock for multi-page print)
-        const templateAttPromos = `
-            <div class="page" style="position: relative !important; break-after: page !important; page-break-after: always !important;"><img src="https://i.imgur.com/U12CtGA.png" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;"></div>
-            <div class="page" style="position: relative !important;"><img src="https://i.imgur.com/0gkjGDG.png" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;"></div>
-        `;
-
         // 9. Take Home Sheet V2
         const templateTakeHomeV2 = `<div class="page"><img src="https://i.imgur.com/JgUhVaD.png" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;"><div class="cut-line-horiz" style="z-index: 5;"></div></div>`;
 
-        // --- AT&T TRADE-IN MODAL LOGIC ---
-        const attCard = document.getElementById('card-atttradein');
-        const attModal = document.getElementById('att-warning-modal');
-        const btnAttCancel = document.getElementById('btn-att-cancel');
-        const btnAttShow = document.getElementById('btn-att-show');
-
-        function handleAttClick() {
-            if (attCard.classList.contains('locked-card')) {
-                attModal.style.display = 'flex';
-            } else {
-                printDoc('atttradein');
-            }
-        }
-
-        btnAttCancel.addEventListener('click', () => {
-            attModal.style.display = 'none';
-        });
-
-        btnAttShow.addEventListener('click', () => {
-            attModal.style.display = 'none';
-            attCard.classList.remove('locked-card');
-        });
+        // 10. VZW Flyer Test (Landscape)
+        const templateVzwFlyerTest = `<div class="page-landscape"><img src="https://i.imgur.com/OaElQzU.png" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;"></div><div class="page-landscape"><img src="https://i.imgur.com/r0XkCbs.png" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1;"></div>`;
 
         // --- AT&T PROMOS MODAL LOGIC ---
         const attPromosCard = document.getElementById('card-attpromos');
@@ -953,7 +929,7 @@
             if (attPromosCard.classList.contains('locked-card')) {
                 attPromosModal.style.display = 'flex';
             } else {
-                printDoc('attpromos');
+                printPDF('ATT Promos 06-16-26.pdf');
             }
         }
 
@@ -964,17 +940,36 @@
         btnAttPromosShow.addEventListener('click', () => {
             attPromosModal.style.display = 'none';
             attPromosCard.classList.remove('locked-card');
+            printPDF('ATT Promos 06-16-26.pdf');
+        });
+
+        // --- VZW PROMOS MODAL LOGIC ---
+        const vzwPromosCard = document.getElementById('card-vzwpromos');
+        const vzwPromosModal = document.getElementById('vzw-promos-warning-modal');
+        const btnVzwPromosCancel = document.getElementById('btn-vzwpromos-cancel');
+        const btnVzwPromosShow = document.getElementById('btn-vzwpromos-show');
+
+        function handleVzwPromosClick() {
+            if (vzwPromosCard.classList.contains('locked-card')) {
+                vzwPromosModal.style.display = 'flex';
+            } else {
+                printPDF('VZW Promos 6-16-26.pdf');
+            }
+        }
+
+        btnVzwPromosCancel.addEventListener('click', () => {
+            vzwPromosModal.style.display = 'none';
+        });
+
+        btnVzwPromosShow.addEventListener('click', () => {
+            vzwPromosModal.style.display = 'none';
+            vzwPromosCard.classList.remove('locked-card');
+            printPDF('VZW Promos 6-16-26.pdf');
         });
 
         // --- INITIALIZATION ---
-        document.getElementById('preview-takehome').innerHTML = templateTakeHome;
-        document.getElementById('doc-takehome').innerHTML = templateTakeHome;
-        
         document.getElementById('preview-intake').innerHTML = templateIntake;
         document.getElementById('doc-intake').innerHTML = templateIntake;
-        
-        document.getElementById('preview-combined').innerHTML = templateCombined;
-        document.getElementById('doc-combined').innerHTML = templateCombined;
 
         document.getElementById('preview-vzwtrade').innerHTML = templateVzwTrade;
         document.getElementById('doc-vzwtrade').innerHTML = templateVzwTrade;
@@ -985,43 +980,105 @@
         document.getElementById('preview-warpcalls').innerHTML = templateWarpCalls;
         document.getElementById('doc-warpcalls').innerHTML = templateWarpCalls;
 
-        document.getElementById('preview-atttradein').innerHTML = templateAttTradeIn;
-        document.getElementById('doc-atttradein').innerHTML = templateAttTradeIn;
-
-        document.getElementById('preview-attpromos').innerHTML = templateAttPromos;
-        document.getElementById('doc-attpromos').innerHTML = templateAttPromos;
-
         document.getElementById('preview-takehomev2').innerHTML = templateTakeHomeV2;
         document.getElementById('doc-takehomev2').innerHTML = templateTakeHomeV2;
 
-        // --- PRINT LOGIC (v20 Performance Fix) ---
-        function printDoc(type) {
-            // 1. Forcefully clear ANY existing print classes to prevent bleed-over
+        document.getElementById('preview-vzwflyertest').innerHTML = `<img src="https://i.imgur.com/OaElQzU.png" style="width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0;">`;
+        document.getElementById('doc-vzwflyertest').innerHTML = templateVzwFlyerTest;
+
+        // Deferred Thumbnail Loading for Snappiness
+        setTimeout(() => {
+            const templateAttPromosThumb = `<iframe src="ATT Promos 06-16-26.pdf#view=FitH&toolbar=0&navpanes=0&scrollbar=0" style="width: 100%; height: 100%; border: none; overflow: hidden; pointer-events: none;" tabindex="-1"></iframe>`;
+            const previewElement = document.getElementById('preview-attpromos');
+            if (previewElement) {
+                previewElement.innerHTML = templateAttPromosThumb;
+            }
+
+            const templateVzwPromosThumb = `<iframe src="VZW Promos 6-16-26.pdf#view=FitH&toolbar=0&navpanes=0&scrollbar=0" style="width: 100%; height: 100%; border: none; overflow: hidden; pointer-events: none;" tabindex="-1"></iframe>`;
+            const previewElementVzw = document.getElementById('preview-vzwpromos');
+            if (previewElementVzw) {
+                previewElementVzw.innerHTML = templateVzwPromosThumb;
+            }
+        }, 800);
+
+        // --- PDF PRINT ENGINE ---
+        function printPDF(url) {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // Mobile fallback: Open PDF in a new tab for native handling
+                window.open(url, '_blank');
+            } else {
+                // Desktop/WMPC: Hidden iframe print engine
+                let printFrame = document.getElementById('pdf-print-frame');
+                if (!printFrame) {
+                    printFrame = document.createElement('iframe');
+                    printFrame.id = 'pdf-print-frame';
+                    printFrame.style.display = 'none';
+                    document.body.appendChild(printFrame);
+                }
+                
+                // Set onload listener to print once the PDF is loaded into the iframe
+                printFrame.onload = function() {
+                    setTimeout(() => {
+                        printFrame.contentWindow.print();
+                    }, 500); // Tiny delay to ensure browser's internal PDF engine is ready
+                };
+                
+                // Trigger the load
+                printFrame.src = url;
+            }
+        }
+
+        // --- PRINT LOGIC (Tap-to-Return Mobile Fix) ---
+        function cleanupPrint() {
             document.body.className = document.body.className.replace(/\bprinting-\S+/g, '');
             document.body.classList.remove('multi-page');
             document.documentElement.classList.remove('multi-page');
+            
+            const dynamicStyle = document.getElementById('dynamic-page-style');
+            if (dynamicStyle) dynamicStyle.remove();
+
+            // Remove listeners to prevent memory leaks and accidental triggers later
+            window.removeEventListener('click', cleanupPrint, true);
+            window.removeEventListener('touchstart', cleanupPrint, true);
+        }
+
+        function printDoc(type) {
+            // 1. Forcefully clear ANY existing print classes to prevent bleed-over
+            cleanupPrint();
             
             // 2. Add the requested print class
             document.body.classList.add('printing-' + type);
 
             // Multi-page override
-            if (type === 'attpromos') {
+            if (type === 'attpromos' || type === 'vzwflyertest') {
                 document.body.classList.add('multi-page');
                 document.documentElement.classList.add('multi-page');
+            }
+
+            // Landscape override
+            if (type === 'vzwflyertest') {
+                const style = document.createElement('style');
+                style.id = 'dynamic-page-style';
+                style.innerHTML = '@page { size: 11in 8.5in !important; margin: 0; }';
+                document.head.appendChild(style);
             }
             
             // 3. Tiny timeout to ensure DOM updates before calling print dialog
             setTimeout(() => {
                 window.print();
+                
+                // 4. Mobile Tap-to-Return Logic
+                // Wait for the print dialog to seize the main thread, then attach listeners
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        window.addEventListener('click', cleanupPrint, true);
+                        window.addEventListener('touchstart', cleanupPrint, true);
+                    }, 500); // 500ms delay prevents the initial button tap from triggering cleanup
+                });
             }, 100);
         }
-
-        // Native cleanup listener: instantly removes classes when dialog closes
-        window.addEventListener('afterprint', () => {
-            document.body.className = document.body.className.replace(/\bprinting-\S+/g, '');
-            document.body.classList.remove('multi-page');
-            document.documentElement.classList.remove('multi-page');
-        });
 
         // --- TUTORIAL MODAL LOGIC ---
         const tutModal = document.getElementById('tutorial-modal');
